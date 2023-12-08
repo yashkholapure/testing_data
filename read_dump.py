@@ -9,7 +9,7 @@ try:
         user='vxyz',
         password='100',
         database='db',
-        port=3306 
+        port=305
     )
     cur_sql = conn_sql.cursor(buffered=True)
 
@@ -29,7 +29,7 @@ try:
     df_transformed.show(5)
 
     try:
-        database_url = "jdbc:mysql://xyz.com:3306/iauro"
+        database_url = "jdbc://xyz.com:3306/iauro"
         table_name = "fulltime"
         properties = {
             "user": "xyz",
