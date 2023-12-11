@@ -17,7 +17,7 @@ try:
     cur_sql.execute(query)
     conn_sql.commit()
     count = cur_sql.rowcount
-    print(f"{count} rows updated.")
+    print(f"{count} rows.")
 
     rows = cur_sql.fetchall()
     columns = [col[0] for col in cur_sql.description]
@@ -29,11 +29,11 @@ try:
     df_transformed.show(5)
 
     try:
-        database_url = "jdbc://xyz.com:3306/iauro"
-        table_name = "fulltime"
+        database_url = "jdbc://xyz.com:305/liar"
+        table_name = "fulltime_internship"
         properties = {
-            "user": "xyz",
-            "password": "100",
+            "user": "liar",
+            "password": "no_hopes",
             "driver": "com.mysql.jdbc.Driver"  
         }
         df.write.jdbc(url=database_url, table=table_name, mode="append", properties=properties)
