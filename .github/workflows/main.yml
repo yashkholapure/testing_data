@@ -15,8 +15,8 @@ jobs:
       - name: Update Databricks notebook
         uses: databricks/run-notebook@v0
         with:
-          local-notebook-path: /Users/iauro-az@outlook.com/read_test
-          # workspace-notebook-path: read_dump.py
+          # local-notebook-path: /Users/iauro-az@outlook.com/read_test
+          workspace-notebook-path: read_test.py
           databricks-host: https://adb-5219522611471112.12.azuredatabricks.net/
           databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
           git-commit: ${{ github.sha }}
