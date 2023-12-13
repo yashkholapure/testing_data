@@ -1,27 +1,48 @@
-name: Update Databricks notebook on push
+# name: Update Databricks notebook on push
+
+# on:
+#   push:
+#     branches:
+#       - master  
+
+# jobs:
+#   update-databricks-notebook:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+      
+#       - name: Update Databricks notebook
+#         uses: databricks/run-notebook@v0
+#         with:
+#           local-notebook-path: Repos/git_checking/testing_data/read_dump.py
+#           databricks-host: https://adb-5219522611471112.12.azuredatabricks.net
+#           databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
+#           git-commit: ${{ github.sha }}
+#           new-cluster-json: >
+#             {
+#               "num_workers": 1,
+#               "spark_version": "10.4.x-scala2.12",
+#               "node_type_id": "Standard_D3_v2"
+#             }
+
+
+name: Update Databricks Notebooks
 
 on:
   push:
     branches:
-      - master  
+      - master
 
 jobs:
-  update-databricks-notebook:
+  update-databricks-notebooks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
-      - name: Update Databricks notebook
-        uses: databricks/run-notebook@v0
-        with:
-          local-notebook-path: Repos/git_checking/testing_data/read_dump.py
-          databricks-host: https://adb-5219522611471112.12.azuredatabricks.net
-          databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
-          git-commit: ${{ github.sha }}
-          new-cluster-json: >
-            {
-              "num_workers": 1,
-              "spark_version": "10.4.x-scala2.12",
-              "node_type_id": "Standard_D3_v2"
-            }
+
+      - name: Detect Changes
+        run: |
+          # Detect modified notebooks using Git commands
+          git diff --name-only origin/master...HEAD -- '*.py' > modified_notebooks.txt
+          # Store the list of modified notebooks in a file
