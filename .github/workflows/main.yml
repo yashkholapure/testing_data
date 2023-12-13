@@ -16,7 +16,7 @@ jobs:
         uses: databricks/run-notebook@v0
         with:
           # local-notebook-path: read_dump.py
-          workspace-notebook-path: /Repos/git_checking/testing_data/read_dump
+          workspace-notebook-path: testing_data/read_dump
           databricks-host: https://adb-5219522611471112.12.azuredatabricks.net/
           databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
           git-commit: ${{ github.sha }}
