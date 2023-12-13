@@ -1,0 +1,35 @@
+name: Update Databricks notebook on push
+
+on:
+  push:
+    branches:
+      - master  
+
+jobs:
+  update-databricks-notebook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Update Databricks notebook
+        uses: databricks/run-notebook@v0
+        with:
+          # local-notebook-path: read_dump.py
+          workspace-notebook-path: testing_data/read_dump
+          databricks-host: https://adb-5219522611471112.12.azuredatabricks.net/
+          databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
+          git-commit: ${{ github.sha }}
+          new-cluster-json: >
+            {
+              "num_workers": 1,
+              "spark_version": "10.4.x-scala2.12",
+              "node_type_id": "Standard_D3_v2"
+            }
+
+
+
+
+
+
+
