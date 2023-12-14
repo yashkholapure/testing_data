@@ -1,29 +1,19 @@
-import os
-import requests
-import base64
+# ... (Previous code remains the same)
 
-print("Starting script execution...")
-
-# Define your Databricks details
-DATABRICKS_HOST = 'https://adb-5219522611471112.12.azuredatabricks.net'
-DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository secrets
-
-# Path to your notebooks in Databricks workspace
-DATABRICKS_NOTEBOOK_PATH = '/Workspace/Repos/git_checking/testing_data/testing'
-
-def create_or_update_databricks(notebook_name, notebook_content):
+def update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
     headers = {
         'Authorization': f'Bearer {DATABRICKS_TOKEN}',
         'Content-Type': 'application/json'
     }
-    
+
     notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
 
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
         'content': notebook_content_base64,
-        'format': 'SOURCE'
+        'format': 'SOURCE',
+        'overwrite': 'true'  # Overwrite the existing notebook
     }
 
     try:
@@ -36,6 +26,8 @@ def create_or_update_databricks(notebook_name, notebook_content):
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
+
+# ... (Previous code remains the same)
 
 def detect_and_update_modified_notebooks():
     changed_files = os.getenv('GITHUB_WORKSPACE')  # GitHub workspace directory
@@ -51,7 +43,7 @@ def detect_and_update_modified_notebooks():
                 notebook_name = file
                 with open(os.path.join(root, file), 'r') as file_content:
                     notebook_content = file_content.read()
-                status_code = create_or_update_databricks(notebook_name, notebook_content)
+                status_code = update_databricks(notebook_name, notebook_content)
                 if status_code == 200:
                     print(f"Notebook {notebook_name} updated successfully in Databricks.")
                 else:
