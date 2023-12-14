@@ -21,7 +21,7 @@ def update_databricks(notebook_name, notebook_content):
         'Content-Type': 'application/json'
     }
 
-    # Encode notebook content in base64
+    # Encode notebook content in base64 directly
     notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
 
     data = {
@@ -41,6 +41,7 @@ def update_databricks(notebook_name, notebook_content):
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
+
 
 
 def delete_and_update_files():
