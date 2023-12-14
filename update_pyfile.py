@@ -1,4 +1,15 @@
-# ... (Previous code remains the same)
+import os
+import requests
+import base64
+
+print("Starting script execution...")
+
+# Define your Databricks details
+DATABRICKS_HOST = 'https://adb-5219522611471112.12.azuredatabricks.net'
+DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository secrets
+
+# Path to your notebooks in Databricks workspace
+DATABRICKS_NOTEBOOK_PATH = '/Workspace/Repos/git_checking/testing_data/testing'
 
 def create_or_update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
@@ -25,8 +36,6 @@ def create_or_update_databricks(notebook_name, notebook_content):
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
-
-# ... (Previous code remains the same)
 
 def detect_and_update_modified_notebooks():
     changed_files = os.getenv('GITHUB_WORKSPACE')  # GitHub workspace directory
