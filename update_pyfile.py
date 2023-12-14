@@ -25,7 +25,6 @@ def update_databricks(notebook_name, notebook_content):
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
         'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
-        'overwrite': 'true',
         'content': notebook_content_base64  # Pass base64-encoded notebook content
     }
 
