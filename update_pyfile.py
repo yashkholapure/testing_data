@@ -1,6 +1,5 @@
 import os
 import requests
-import base64
 
 print("Starting script execution...")
 
@@ -15,19 +14,11 @@ def update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
     headers = {
         'Authorization': f'Bearer {DATABRICKS_TOKEN}',
-        'Content-Type': 'application/json'
-    }
-    # Convert notebook content to base64-encoded string
-    notebook_content_base64 = base64.b64encode(notebook_content).decode('utf-8')
-    data = {
-        'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
-        'content': notebook_content_base64,
-        'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
-        # 'overwrite': 'true'  # Remove the 'overwrite' parameter for folder imports
+        'Content-Type': 'text/plain'  # Set content type to 'text/plain'
     }
     
     try:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, data=notebook_content)
         response.raise_for_status()  # Raise an error for HTTP errors (status codes >= 400)
         return response.status_code
     except requests.HTTPError as http_err:
@@ -49,7 +40,7 @@ def detect_and_update_modified_notebooks():
             if file.endswith('.py'):
                 print("inside if statement...")
                 notebook_name = file
-                notebook_content = open(os.path.join(root, file), 'rb').read()
+                notebook_content = open(os.path.join(root, file), 'r').read()
                 status_code = update_databricks(notebook_name, notebook_content)
                 if status_code == 200:
                     print(f"Notebook {notebook_name} updated successfully in Databricks.")
