@@ -33,6 +33,10 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    types: [closed]
+    branches:
+      - master
 
 jobs:
   update-databricks-notebooks:
@@ -41,15 +45,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Detect Changes
-        run: |
-          git diff --name-only origin/master...HEAD -- '*.py' > modified_notebooks.txt
-          cat modified_notebooks.txt  # Display contents of modified_notebooks.txt for debugging
+      - name: Install Python and dependencies
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-      - name: Update Notebooks in Databricks
+      - name: Run Python script to update Databricks
+        run: |
+          pip install GitPython
+          python update_pyfile.py  # Replace with the actual name of your Python script
         env:
-          DATABRICKS_HOST: https://adb-5219522611471112.12.azuredatabricks.net
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          # Your existing code to update Databricks notebooks based on modified_notebooks.txt
-
