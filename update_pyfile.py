@@ -32,6 +32,7 @@ def update_databricks(notebook_name, notebook_content):
         return response.status_code
     except requests.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
+        print(f"Detailed error message: {response.text}")  # Print detailed error message from the API
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
