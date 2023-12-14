@@ -19,7 +19,7 @@ def delete_databricks_file(notebook_path):
     }
     data = {
         'path': notebook_path,
-        'recursive': False
+        'recursive': True  # Set recursive to delete all files in the directory
     }
     try:
         response = requests.post(url, headers=headers, json=data)
@@ -61,6 +61,10 @@ def delete_and_update_files():
     delete_status = delete_databricks_file(DATABRICKS_NOTEBOOK_PATH)
     if delete_status == 200:
         print(f"Deleted files from Databricks at path: {DATABRICKS_NOTEBOOK_PATH}")
+    elif delete_status == 404:
+        print(f"Folder not found in Databricks at path: {DATABRICKS_NOTEBOOK_PATH}")
+    else:
+        print(f"Failed to delete files. Status code: {delete_status}")
 
     # Fetch and upload files from GitHub to Databricks
     github_files_path = os.getenv('GITHUB_WORKSPACE') + '/testing'
