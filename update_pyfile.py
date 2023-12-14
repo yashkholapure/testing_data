@@ -11,37 +11,53 @@ DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository
 # Path to your notebooks in Databricks workspace
 DATABRICKS_NOTEBOOK_PATH = '/Workspace/Repos/git_checking/testing_data/testing'
 
+def delete_databricks_file(notebook_path):
+    url = f"{DATABRICKS_HOST}/api/2.0/workspace/delete"
+    headers = {
+        'Authorization': f'Bearer {DATABRICKS_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'path': notebook_path,
+        'recursive': False
+    }
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()
+        return response.status_code
+    except requests.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+        print(f"Detailed error message: {response.text}")
+    except Exception as err:
+        print(f"An error occurred: {err}")
+    return None
+
 def update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
     headers = {
         'Authorization': f'Bearer {DATABRICKS_TOKEN}',
         'Content-Type': 'application/json'
     }
-
-    # Convert notebook content to base64-encoded string
     notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
-
-    # Prepare JSON data with required parameters
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
         'content': notebook_content_base64,
-        'format': 'SOURCE'  # Set format to 'SOURCE' for Python notebooks
+        'format': 'SOURCE',
+        'overwrite': 'false'
     }
-
     try:
         response = requests.post(url, headers=headers, json=data)
-        response.raise_for_status()  # Raise an error for HTTP errors (status codes >= 400)
+        response.raise_for_status()
         return response.status_code
     except requests.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
-        print(f"Detailed error message: {response.text}")  # Print detailed error message from the API
+        print(f"Detailed error message: {response.text}")
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
 
-
 def detect_and_update_modified_notebooks():
-    changed_files = os.getenv('GITHUB_WORKSPACE')  # GitHub workspace directory
+    changed_files = os.getenv('GITHUB_WORKSPACE')
     print("outside loop...")
 
     for root, dirs, files in os.walk(changed_files + '/testing'):
@@ -52,8 +68,17 @@ def detect_and_update_modified_notebooks():
             if file.endswith('.py'):
                 print("inside if statement...")
                 notebook_name = file
-                with open(os.path.join(root, file), 'r') as file_content:
-                    notebook_content = file_content.read()
+                notebook_content = open(os.path.join(root, file), 'r').read()
+
+                # Get the notebook path to delete
+                notebook_path = f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}"
+
+                # Delete the notebook from Databricks
+                delete_status = delete_databricks_file(notebook_path)
+                if delete_status == 200:
+                    print(f"Deleted {notebook_name} from Databricks.")
+
+                # Upload the updated notebook content
                 status_code = update_databricks(notebook_name, notebook_content)
                 if status_code == 200:
                     print(f"Notebook {notebook_name} updated successfully in Databricks.")
