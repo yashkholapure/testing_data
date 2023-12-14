@@ -23,7 +23,7 @@ def update_databricks(notebook_name, notebook_content):
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
         'content': notebook_content_base64,
         'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
-        'overwrite': 'true'
+        # 'overwrite': 'true'  # Remove the 'overwrite' parameter for folder imports
     }
     
     try:
