@@ -12,8 +12,7 @@ DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository
 DATABRICKS_NOTEBOOK_PATH = '/Repos/git_checking/testing_data/testing'
 
 def delete_databricks_file(notebook_path):
-    # Function to delete files in Databricks
-    # Similar to the one used in the previous code
+    pass
 
 def update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
