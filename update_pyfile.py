@@ -12,25 +12,8 @@ DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository
 DATABRICKS_NOTEBOOK_PATH = '/Repos/git_checking/testing_data/testing'
 
 def delete_databricks_file(notebook_path):
-    url = f"{DATABRICKS_HOST}/api/2.0/workspace/delete"
-    headers = {
-        'Authorization': f'Bearer {DATABRICKS_TOKEN}',
-        'Content-Type': 'application/json'
-    }
-    data = {
-        'path': notebook_path,
-        'recursive': True  # Set recursive to delete all files in the directory
-    }
-    try:
-        response = requests.post(url, headers=headers, json=data)
-        response.raise_for_status()
-        return response.status_code
-    except requests.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-        print(f"Detailed error message: {response.text}")
-    except Exception as err:
-        print(f"An error occurred: {err}")
-    return None
+    # Function to delete files in Databricks
+    # Similar to the one used in the previous code
 
 def update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
@@ -38,10 +21,9 @@ def update_databricks(notebook_name, notebook_content):
         'Authorization': f'Bearer {DATABRICKS_TOKEN}',
         'Content-Type': 'application/json'
     }
-    notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
-        'content': notebook_content_base64,
+        'content': notebook_content,
         'format': 'SOURCE',
         'overwrite': 'false'
     }
@@ -57,14 +39,8 @@ def update_databricks(notebook_name, notebook_content):
     return None
 
 def delete_and_update_files():
-    # Delete files from Databricks
-    delete_status = delete_databricks_file(DATABRICKS_NOTEBOOK_PATH)
-    if delete_status == 200:
-        print(f"Deleted files from Databricks at path: {DATABRICKS_NOTEBOOK_PATH}")
-    elif delete_status == 404:
-        print(f"Folder not found in Databricks at path: {DATABRICKS_NOTEBOOK_PATH}")
-    else:
-        print(f"Failed to delete files. Status code: {delete_status}")
+    # Function to delete files in Databricks
+    # Similar to the one used in the previous code
 
     # Fetch and upload files from GitHub to Databricks
     github_files_path = os.getenv('GITHUB_WORKSPACE') + '/testing'
