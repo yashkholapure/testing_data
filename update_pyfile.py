@@ -26,8 +26,8 @@ def list_items_in_workspace(path='/'):
     return None
 
 if __name__ == "__main__":
-    repos_items = list_items_in_workspace('/testing_data')
+    repos_items = list_items_in_workspace('Repos/git_checking/testing_data')
     if repos_items:
-        print("Items in the '/Repos' directory:")
+        print("Items in the 'Repos/git_checking/testing_data' directory:")
         for item in repos_items:
             print(item)
