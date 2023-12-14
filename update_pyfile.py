@@ -18,22 +18,23 @@ def update_databricks(notebook_name, notebook_content):
         'Content-Type': 'application/json'
     }
 
+    # Convert notebook content to base64-encoded string
     notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
 
+    # Prepare JSON data with required parameters
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
         'content': notebook_content_base64,
-        'format': 'SOURCE',
-        'overwrite': 'true'  # Overwrite the existing notebook
+        'format': 'SOURCE'  # Set format to 'SOURCE' for Python notebooks
     }
 
     try:
         response = requests.post(url, headers=headers, json=data)
-        response.raise_for_status()
+        response.raise_for_status()  # Raise an error for HTTP errors (status codes >= 400)
         return response.status_code
     except requests.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
-        print(f"Detailed error message: {response.text}")
+        print(f"Detailed error message: {response.text}")  # Print detailed error message from the API
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
