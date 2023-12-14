@@ -25,8 +25,16 @@ def update_databricks(notebook_name, notebook_content):
         'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
         'overwrite': 'true'
     }
-    response = requests.post(url, headers=headers, json=data)
-    return response.status_code
+    
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()  # Raise an error for HTTP errors (status codes >= 400)
+        return response.status_code
+    except requests.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+    except Exception as err:
+        print(f"An error occurred: {err}")
+    return None
 
 def detect_and_update_modified_notebooks():
     changed_files = os.getenv('GITHUB_WORKSPACE')  # GitHub workspace directory
@@ -45,7 +53,7 @@ def detect_and_update_modified_notebooks():
                 if status_code == 200:
                     print(f"Notebook {notebook_name} updated successfully in Databricks.")
                 else:
-                    print(f"Failed to update {notebook_name} in Databricks.")
+                    print(f"Failed to update {notebook_name} in Databricks. Status code: {status_code}")
 
 if __name__ == "__main__":
     detect_and_update_modified_notebooks()
