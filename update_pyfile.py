@@ -26,9 +26,15 @@ def update_databricks(notebook_name, notebook_content):
 
 def detect_and_update_modified_notebooks():
     changed_files = os.getenv('GITHUB_WORKSPACE')  # GitHub workspace directory
+    print("outside loop...")
+
     for root, dirs, files in os.walk(changed_files + '/testing_data'):
+        print("inside first loop...")
+
         for file in files:
+            print("inside second loop...")
             if file.endswith('.py'):
+                print("inside if statement...")
                 notebook_name = file
                 notebook_content = open(os.path.join(root, file), 'rb').read()
                 status_code = update_databricks(notebook_name, notebook_content)
