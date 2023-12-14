@@ -21,15 +21,13 @@ def update_databricks(notebook_name, notebook_content):
         'Content-Type': 'application/json'
     }
 
-    # Encode notebook content as base64
-    notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
-
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
-        'content': notebook_content_base64,
+        'content': notebook_content,  # Send raw notebook content without treating it as a zip file
         'format': 'SOURCE',
         'overwrite': 'false'
     }
+    
     try:
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
