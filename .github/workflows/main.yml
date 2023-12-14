@@ -33,10 +33,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    types: [closed]
-    branches:
-      - master
 
 jobs:
   update-databricks-notebooks:
@@ -50,9 +46,12 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install required Python modules
+        run: |
+          pip install GitPython requests
+
       - name: Run Python script to update Databricks
         run: |
-          pip install GitPython
-          python update_pyfile.py  # Replace with the actual name of your Python script
+          python update_pyfile.py
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
