@@ -1,6 +1,8 @@
 import os
 import requests
 
+print("Starting script execution...")
+
 # Define your Databricks details
 DATABRICKS_HOST = 'https://adb-5219522611471112.12.azuredatabricks.net'
 DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository secrets
