@@ -1,5 +1,6 @@
 import os
 import requests
+import base64
 
 print("Starting script execution...")
 
@@ -17,12 +18,15 @@ def update_databricks(notebook_name, notebook_content):
         'Content-Type': 'application/json'  # Set content type to 'application/json'
     }
 
+    # Encode notebook content as base64
+    notebook_content_base64 = base64.b64encode(notebook_content.encode()).decode('utf-8')
+
     # Prepare JSON data with required parameters
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
         'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
         'overwrite': 'true',
-        'content': notebook_content  # Pass notebook content directly
+        'content': notebook_content_base64  # Pass base64-encoded notebook content
     }
 
     try:
