@@ -21,13 +21,15 @@ def update_databricks(notebook_name, notebook_content):
         'Content-Type': 'application/json'
     }
 
+    notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
+
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
-        'content': notebook_content,
+        'content': notebook_content_base64,
         'format': 'SOURCE',
         'overwrite': 'false'
     }
-    
+
     try:
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
@@ -38,7 +40,6 @@ def update_databricks(notebook_name, notebook_content):
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
-
 
 
 
