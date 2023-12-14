@@ -46,6 +46,7 @@ jobs:
           # Detect modified notebooks using Git commands
           git diff --name-only origin/master...HEAD -- '*.py' > modified_notebooks.txt
           # Store the list of modified notebooks in a file
+
       - name: Update Notebooks in Databricks
         env:
           DATABRICKS_HOST: https://adb-5219522611471112.12.azuredatabricks.net
@@ -54,6 +55,10 @@ jobs:
           while IFS= read -r notebook; do
               echo "Updating $notebook in Databricks..."
               # Use Databricks APIs/CLI (actual commands) to update notebooks
-              databricks repos update --path "/Workspace/Repos/git_checking/testing_data/$notebook" --branch "master"
-              echo "$notebook updated successfully"
+              if databricks repos update --path "/Workspace/Repos/git_checking/testing_data/$notebook" --branch "master"; then
+                echo "$notebook updated successfully"
+              else
+                echo "Error updating $notebook in Databricks"
+                exit 1 # Exit with error status
+              fi
           done < modified_notebooks.txt
