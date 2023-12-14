@@ -9,7 +9,7 @@ DATABRICKS_HOST = 'https://adb-5219522611471112.12.azuredatabricks.net'
 DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository secrets
 
 # Path to your notebooks in Databricks workspace
-DATABRICKS_NOTEBOOK_PATH = '/Workspace/Repos/git_checking/testing_data/testing'
+DATABRICKS_NOTEBOOK_PATH = '/Repos/git_checking/testing_data'
 
 def delete_databricks_file(notebook_path):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/delete"
