@@ -14,11 +14,19 @@ def update_databricks(notebook_name, notebook_content):
     url = f"{DATABRICKS_HOST}/api/2.0/workspace/import"
     headers = {
         'Authorization': f'Bearer {DATABRICKS_TOKEN}',
-        'Content-Type': 'text/plain'  # Set content type to 'text/plain'
+        'Content-Type': 'application/json'  # Set content type to 'application/json'
     }
-    
+
+    # Prepare JSON data with required parameters
+    data = {
+        'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
+        'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
+        'overwrite': 'true',
+        'content': notebook_content  # Pass notebook content directly
+    }
+
     try:
-        response = requests.post(url, headers=headers, data=notebook_content)
+        response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()  # Raise an error for HTTP errors (status codes >= 400)
         return response.status_code
     except requests.HTTPError as http_err:
