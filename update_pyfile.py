@@ -20,9 +20,13 @@ def update_databricks(notebook_name, notebook_content):
         'Authorization': f'Bearer {DATABRICKS_TOKEN}',
         'Content-Type': 'application/json'
     }
+
+    # Encode notebook content as base64
+    notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
+
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
-        'content': notebook_content,
+        'content': notebook_content_base64,
         'format': 'SOURCE',
         'overwrite': 'false'
     }
@@ -36,6 +40,7 @@ def update_databricks(notebook_name, notebook_content):
     except Exception as err:
         print(f"An error occurred: {err}")
     return None
+
 
 def delete_and_update_files():
     # Function to delete files in Databricks
