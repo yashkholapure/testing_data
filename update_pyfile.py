@@ -18,14 +18,15 @@ def update_databricks(notebook_name, notebook_content):
         'Content-Type': 'application/json'
     }
 
-    # Encode notebook content to base64
+    # Convert notebook content to base64-encoded string
     notebook_content_base64 = base64.b64encode(notebook_content.encode('utf-8')).decode('utf-8')
 
     # Prepare JSON data with required parameters
     data = {
         'path': f"{DATABRICKS_NOTEBOOK_PATH}/{notebook_name}",
+        'content': notebook_content_base64,
         'format': 'SOURCE',  # Set format to 'SOURCE' for Python notebooks
-        'content': notebook_content_base64
+        'overwrite': 'true'  # You may need to adjust this parameter based on your requirements
     }
 
     try:
@@ -51,7 +52,8 @@ def detect_and_update_modified_notebooks():
             if file.endswith('.py'):
                 print("inside if statement...")
                 notebook_name = file
-                notebook_content = open(os.path.join(root, file), 'r').read()
+                with open(os.path.join(root, file), 'r') as file_content:
+                    notebook_content = file_content.read()
                 status_code = update_databricks(notebook_name, notebook_content)
                 if status_code == 200:
                     print(f"Notebook {notebook_name} updated successfully in Databricks.")
