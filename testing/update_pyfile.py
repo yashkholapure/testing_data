@@ -1,6 +1,8 @@
 import os
 import requests
 
+print("Starting script execution...")
+
 # Define your Databricks details
 DATABRICKS_HOST = 'https://adb-5219522611471112.12.azuredatabricks.net'
 DATABRICKS_TOKEN = os.getenv('DATABRICKS_TOKEN')  # Fetch from GitHub repository secrets
@@ -24,9 +26,15 @@ def update_databricks(notebook_name, notebook_content):
 
 def detect_and_update_modified_notebooks():
     changed_files = os.getenv('GITHUB_WORKSPACE')  # GitHub workspace directory
-    for root, dirs, files in os.walk(changed_files + '/testing_data'):
+    print("outside loop...")
+
+    for root, dirs, files in os.walk(changed_files + '/testing'):
+        print("inside first loop...")
+
         for file in files:
+            print("inside second loop...")
             if file.endswith('.py'):
+                print("inside if statement...")
                 notebook_name = file
                 notebook_content = open(os.path.join(root, file), 'rb').read()
                 status_code = update_databricks(notebook_name, notebook_content)
