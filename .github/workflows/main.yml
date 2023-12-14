@@ -52,6 +52,7 @@ jobs:
           DATABRICKS_HOST: https://adb-5219522611471112.12.azuredatabricks.net
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
+          cat modified_notebooks.txt 
           while IFS= read -r notebook; do
               echo "Updating $notebook in Databricks..."
               # Use Databricks APIs/CLI (actual commands) to update notebooks
