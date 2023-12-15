@@ -1,57 +1,68 @@
-# name: Update Databricks notebook on push
+
+
+
+# name: Update Databricks Notebooks
 
 # on:
 #   push:
 #     branches:
-#       - master  
+#       - master
 
 # jobs:
-#   update-databricks-notebook:
+#   update-databricks-notebooks:
 #     runs-on: ubuntu-latest
 #     steps:
 #       - name: Checkout repository
 #         uses: actions/checkout@v2
-      
-#       - name: Update Databricks notebook
-#         uses: databricks/run-notebook@v0
+
+#       - name: Install Python and dependencies
+#         uses: actions/setup-python@v2
 #         with:
-#           local-notebook-path: Repos/git_checking/testing_data/read_dump.py
-#           databricks-host: https://adb-5219522611471112.12.azuredatabricks.net
-#           databricks-token: ${{ secrets.DATABRICKS_TOKEN }}
-#           git-commit: ${{ github.sha }}
-#           new-cluster-json: >
-#             {
-#               "num_workers": 1,
-#               "spark_version": "10.4.x-scala2.12",
-#               "node_type_id": "Standard_D3_v2"
-#             }
+#           python-version: '3.x'
+
+#       - name: Install required Python modules
+#         run: |
+#           pip install GitPython requests
+
+#       - name: Run Python script to update Databricks
+#         run: |
+#           python update_pyfile.py
+#         env:
+#           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
 
-name: Update Databricks Notebooks
+
+
+
+name: Upload to Databricks
 
 on:
   push:
     branches:
-      - master
+      - main  # Change this to your repository's main branch name
 
 jobs:
-  update-databricks-notebooks:
+  upload_to_databricks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Python and dependencies
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.x'  # Choose your Python version
 
-      - name: Install required Python modules
+      - name: Install Databricks CLI
         run: |
-          pip install GitPython requests
+          pip install databricks-cli
 
-      - name: Run Python script to update Databricks
+      - name: Upload files to Databricks workspace
         run: |
-          python update_pyfile.py
+          for file in $(find $GITHUB_WORKSPACE/testing_data/testing -name '*.py'); do
+            databricks workspace import "$file" '/Repos/git_checking/testing_data/testing/' --overwrite
+          done
         env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: 'https://adb-5219522611471112.12.azuredatabricks.net'  # Replace with your Databricks URL
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}  # Replace with your Databricks API token
+
