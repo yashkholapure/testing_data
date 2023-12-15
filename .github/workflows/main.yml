@@ -60,7 +60,7 @@ jobs:
       - name: Upload files to Databricks workspace
         run: |
           for file in $(find $GITHUB_WORKSPACE/testing -name '*.py'); do
-            databricks workspace import --language PYTHON "$file" '/Repos/git_checking/testing_data/testing/' --overwrite
+            databricks workspace import --language PYTHON "$file" '/Repos/git_checking/testing_data/testing/$(basename $file)' --overwrite
           done
         env:
           DATABRICKS_HOST: 'https://adb-5219522611471112.12.azuredatabricks.net'  # Replace with your Databricks URL
