@@ -59,7 +59,7 @@ jobs:
 
       - name: Upload files to Databricks workspace
         run: |
-          for file in $(find $GITHUB_WORKSPACE/testing_data/testing -name '*.py'); do
+          for file in $(find $GITHUB_WORKSPACE/testing -name '*.py'); do
             databricks workspace import "$file" '/Repos/git_checking/testing_data/testing/' --overwrite
           done
         env:
