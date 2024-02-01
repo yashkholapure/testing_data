@@ -39,7 +39,7 @@ name: Upload to Databricks
 on:
   push:
     branches:
-      - glenmark  # Change this to your repository's main branch name
+      - master  # Change this to your repository's main branch name
 
 jobs:
   upload_to_databricks:
